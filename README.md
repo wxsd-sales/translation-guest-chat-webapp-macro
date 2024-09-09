@@ -2,6 +2,8 @@
 
 This is an example Cisco Collaboration Device Macro and Web App which enables a guest user to IM with a Webex User with automatic translation.
 
+![Translation App](https://github.com/user-attachments/assets/55661e39-92df-4f8f-ad5d-4c12ea59c5e8)
+
 
 ## Overview
 
