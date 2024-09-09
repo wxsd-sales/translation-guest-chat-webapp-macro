@@ -76,8 +76,20 @@ sequenceDiagram
 ### Installation Steps:
 
 1. Download the ``translation-guest-chat.js`` file and upload it to your Webex Devices Macro editor via the web interface.
-2. Configure the macros, there are comments for each field to help with the configuration.
-3. Enable the Macro on the editor.
+2. Configure the macro, by entering the Client ID/Secret and Refresh Token of your Service App. Also configured the Target Email of the Webex Agent the Web App will automatically contact.
+    ```javascript
+    const config = {
+      webapp: 'https://wxsd-sales.github.io/translation-guest-chat-webapp-macro/webapp',
+      oauth: {
+        clientId: '<Guest Management Service App Client ID>',
+        clientSecret: '<Guest Management Service App Client Secret>',
+        refreshToken: '<Guest Management Service App Refresh Token>'
+      },
+      target: '<Email Address Of Target Agent>',
+      panelId: 'webexchat'
+    }
+    ```
+4. Save and Enable the Macro on the editor.
 
 ## Demo
 
