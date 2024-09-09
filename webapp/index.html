@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en-US" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <title>Chat App</title>
+    <script
+      crossorigin
+      src="https://unpkg.com/webex@3.3.1/umd/webex.min.js"
+    ></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-keyboard-layouts@latest/build/index.min.js"></script>
+
+    <script defer src="ChatAppLanguage.js" type="module"></script>
+    <script defer src="keyboards.js" type="module"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://code.s4d.io/widget-space/latest/main.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css"
+    />
+    
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"
+    ></script>
+
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+
+    <style>
+      .simple-keyboard.myTheme1 {
+        background-color: rgba(0, 0, 0, 0.8);
+        border-radius: 0;
+        border-bottom-right-radius: 5px;
+        border-bottom-left-radius: 5px;
+      }
+
+      .simple-keyboard.myTheme1 .hg-button {
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+      }
+
+      .simple-keyboard.myTheme1 .hg-button:active {
+        background: #1c4995;
+        color: white;
+      }
+
+      #root .simple-keyboard.myTheme1 + .simple-keyboard-preview {
+        background: #1c4995;
+      }
+
+      .messages {
+        scrollbar-color: red orange;
+        scrollbar-width: thin;
+        overflow-y: scroll;
+        height: 55vh;
+      }
+
+      .messages::-webkit-scrollbar {
+        width: 1em;
+      }
+
+      .messages::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      }
+
+      .messages::-webkit-scrollbar-thumb {
+        background-color: darkgrey;
+        outline: 1px solid slategrey;
+      }
+    </style>
+  </head>
+  <body x-data="app">
+    <section class="hero is-fullheight">
+      <div class="hero-head">
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="https://bulma.io">
+              <figure class="image">
+                <img
+                  src="https://www.webex.com/content/dam/www/us/en/logos/CiscoWebex-Logo_white.png"
+                />
+              </figure>
+            </a>
+          </div>
+
+          <template x-if="languageSelected">
+            <div class="navbar-menu">
+              <div class="navbar-end">
+                <div class="navbar-item">
+                  <div class="buttons">
+                    <a class="button is-success" @click="resetLanguage">
+                      <strong
+                        x-text="languageIcon + ' ' + languageName"
+                      ></strong>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </nav>
+      </div>
+      <div
+        class="hero-body"
+        :class="(languageSelected && nameSet) || (languageSelected && !nameSet) ? 'is-align-items-start':''"
+      >
+        <div class="container has-text-centered" x-show="!languageSelected">
+          <p class="title is-1 mb-6">Select Language</p>
+
+          <div class="grid">
+            <template x-for="(language, key) in languages">
+              <div class="cell" @click="setLanguage(key)">
+                <div class="card">
+                  <div class="card-content">
+                    <div class="media">
+                      <div class="media-left">
+                        <p class="title is-2" x-text="language.icon"></p>
+                      </div>
+                      <div class="media-content has-text-left">
+                        <p class="title is-2" x-text="language.name"></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <div class="container has-text-centered" x-show="languageSelected">
+          <div
+            class="is-flex is-flex-direction-column is-justify-content-end"
+            style="height: 60vh"
+          >
+            <p
+              x-show="!nameSet"
+              class="title is-1 mb-6"
+              x-text="languagePrompt"
+              x-trap="nameSet"
+            ></p>
+
+            <input
+              x-show="!nameSet"
+              @change="console.log('Name Change Event:', $event)"
+              @keydown.enter="setName($event.target)"
+              type="text"
+              class="input is-info is-large"
+              placeholder="Your Name"
+              id="nameInput"
+              onfocus="blur()"
+            />
+
+            <div
+              x-show="nameSet"
+              x-init="$watch('nameSet', () => {if(nameSet){webexChatConnect(name)}})"
+            >
+              <div
+                class="is-flex is-flex-direction-column is-justify-content-end"
+              >
+                <div
+                  class="is-flex is-flex-direction-column-reverse messages"
+                  id="messages"
+                >
+                  <div x-show="!webexConnected" class="notification is-info">
+                    Connecting
+                  </div>
+                  <template
+                    x-show="webexConnected"
+                    x-for="(message, key) in messages"
+                  >
+                    <div
+                      class="is-flex is-flex-direction-row"
+                      :class="message.from=='agent'?'':'is-justify-content-end'"
+                    >
+                      <div>
+                        <div
+                          class="is-flex is-align-items-end"
+                          :class="message.from=='agent'?'':'is-justify-content-end '"
+                        >
+                          <div
+                            class="is-flex"
+                            :class="message.from=='agent'?'is-flex-direction-row-reverse':'is-flex-direction-row'"
+                          >
+                            <div
+                              class="notification my-5 has-text-left"
+                              :class="message.from=='agent'?'ml-5 is-link':'mr-5 is-success'"
+                            >
+                              <template x-if="message.from=='agent'">
+                                <span class="icon">
+                                <i class="fa-solid fa-language has-text-success"></i>
+                              </span>
+                            </template>
+                              
+                              <h4 class="title is-4" x-html="message.text"></h4>
+                            </div>
+
+                            <figure class="image is-96x96">
+                              <img
+                                style="background-color: grey"
+                                class="is-rounded"
+                                :src="message.from=='agent'?'https://cdn.bfldr.com/ENSXS21L/at/vtg7khjsnwgp3gzhcj46h3f/customer_black.svg?auto=webp&format=png?auto=webp&format=png':'https://cdn.bfldr.com/ENSXS21L/at/qchrk7t8pggfvr4x54vtqt9g/people-insights_black.svg?auto=webp&format=png'"
+                                alt=""
+                              />
+                            </figure>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+
+                <div class="px-4 pt-4 mb-2">
+                  <div class="field is-grouped">
+                    <p class="control is-expanded">
+                      <input
+                        class="input is-info is-large"
+                        :class="(webexConnected) ? '' : 'is-skeleton'"
+                        type="text"
+                        placeholder="Enter Message"
+                        @change="console.log('Message Change Event:', $event)"
+                        autocomplete="off"
+                        autofocus="true"
+                        @updatechat="updateChat($event)"
+                        @keydown.enter="updateChat($event.target)"
+                        id="chatInput"
+                        x-trap="nameSet"
+                        x-ref="message"
+                        onfocus="blur()"
+                      />
+                    </p>
+                    <p class="control">
+                      <button
+                        class="button is-info is-large"
+                        :class="(webexConnected) ? '' : 'is-skeleton'"
+                        @click="updateChat($refs.message)"
+                      >
+                        Submit
+                      </button>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="simple-keyboard"></div>
+        </div>
+      </div>
+
+      <div class="hero-foot"></div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.js"></script>
+    <script></script>
+  </body>
+</html>
