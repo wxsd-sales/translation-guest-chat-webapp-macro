@@ -24,7 +24,7 @@ import xapi from 'xapi';
 **********************************************************/
 
 const config = {
-  webapp: 'https://wxsd.github.io/translation-guest-chat-webapp-macro/webapp',
+  webapp: 'https://wxsd-sales.github.io/translation-guest-chat-webapp-macro/webapp',
   oauth: {
     clientId: '<Guest Management Service App Client ID>',
     clientSecret: '<Guest Management Service App Client Secret>',
