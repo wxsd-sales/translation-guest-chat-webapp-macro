@@ -65,6 +65,9 @@ sequenceDiagram
 
 ### Prerequisites & Dependencies: 
 
+- Webex Service App Integration with Guest Issuer scopes
+    - Scopes: ``guest-issuer:write`` & ``guest-issuer:read``
+    - Additional Documentation: https://developer.webex.com/docs/sa-guest-management
 - Cisco Collaboration Desk or Board Device with RoomOS 11.x or above
 - Web admin access to the device to upload the macro
 - (optional) Web Server to host your own copy of the Chat Web App
