@@ -1,6 +1,6 @@
 # Translation Guest Chat Web App and Macro
 
-This is an example Cisco Collaboration Device Macro and Web App which enables a guest user to IM with a Webex User with automatic translation.
+This is an example Cisco Collaboration Device Macro and Web App which enables a Guest User to IM with a Webex User with automatic translation.
 
 ![Translation App](https://github.com/user-attachments/assets/55661e39-92df-4f8f-ad5d-4c12ea59c5e8)
 
@@ -104,7 +104,7 @@ All contents are licensed under the MIT license. Please see [license](LICENSE) f
 
 ## Disclaimer
 <!-- Keep the following here -->  
-Everything included is for demo and Proof of Concept purposes only. Use of the site is solely at your own risk. This site may contain links to third party content, which we do not warrant, endorse, or assume liability for. These demos are for Cisco Webex usecases, but are not Official Cisco Webex Branded demos.
+Everything included is for demo and Proof of Concept purposes only. Use of the site is solely at your own risk. This site may contain links to third party content, which we do not warrant, endorse, or assume liability for. These demos are for Cisco Webex use cases, but are not Official Cisco Webex Branded demos.
 
 
 ## Questions
